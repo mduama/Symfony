@@ -1,0 +1,99 @@
+{% extends "dwpubcoffeeMakerBundle::layout.html.twig" %}
+
+{% block head %}    
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/dwpubcoffeemaker/css/dropdown_styles.css') }}" />    
+    <script type="text/javascript" src="{{ asset('bundles/dwpubcoffeemaker/js/mydropdown.js') }}"> </script>    
+{% endblock %}
+
+{% block content %}
+    <img class="dwpubcoffeelogo" alt="DWPub Coffee Maker" title="DWPub Coffee Maker" src="{{ asset('bundles/dwpubcoffeemaker/images/coffeemaker.jpg') }}">
+    {% if coffeeBeans is defined %}
+    	<div class="container theme-showcase" role="main">
+	      <div class="row">
+			<div class="col-sm-4" style="margin-right: 50px;">
+	          <div class="panel panel-primary">
+	            <div class="panel-heading">
+	              <h3 class="panel-title"><span style="font-size: 24px;">Coffee Selection</span></h3>
+	            </div>
+	            <div class="panel-body">
+					<div class="col-sm-12">
+					  <div class="list-group">					
+						{% for coffeeBean in coffeeBeans %}
+							<div class="thumbnail" style="margin:10px">
+								<form id="add_to_grinder_form">
+									<img id="coffeeBeanLink" name="coffeeBeanLink" src="{{ coffeeBean }}" border="0" class="thumbnail" height="100" width="100" />
+									<select id="quantity" name="quantity">
+										<option value="1" selected>1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+									</select>								
+									<button id="add_to_grinder" class="add_to_grinder dropdown-button" type="submit">Add to grinder</button>
+								</form>
+							</div>
+						{% endfor %}
+					  </div>
+					</div>
+				</div>
+	          </div>          
+			</div>
+			<div class="col-sm-4">
+	          <div class="panel panel-primary">
+	            <div class="panel-heading">
+	              <h3 class="panel-title"><span style="font-size: 24px;">Currently in Grinder</span></h3>
+	            </div>
+	            <div class="panel-body">
+					<div class="col-sm-12">
+					  <div id="currentlyInGrinder" class="list-group" style="min-height: 345px"></div>
+					  <button id="grindBtn" class="dropdown-button" style="margin-left: 330px">Grind!</button>
+					</div>
+				</div>
+	          </div>          
+			</div>		
+      	</div>
+    	</div>
+    {% endif %}
+    <script type="text/javascript">
+		$(document).ready(function(){
+		    $(".add_to_grinder").click(function(e){
+				e.preventDefault();
+				var coffeeBeanLink = $(this).parent().children("img").attr("src");
+				var quantity = $(this).siblings(".dropdown").children("div").children("p").text();
+				$.ajax({
+          			type:"POST",          
+          			url: '{{ path('dwpubcoffee_maker_addToGrinder') }}',
+          			data:'quantity='+quantity+'&coffeeBeanLink='+coffeeBeanLink,
+          			success: function(){
+				    	updateRightPanel(coffeeBeanLink);
+				    }
+				});
+			});
+			function updateRightPanel(coffeeBeanLink) {
+		        $.ajax({
+          			type:"POST",          
+          			url: '{{ path('dwpubcoffee_maker_updateGrinder') }}',
+          			data:'coffeeBeanLink='+coffeeBeanLink,          			
+          			success: function(data){
+          			    var quantity = data["quantity"];
+          			    var coffeeBeanLink = data["coffeeBeanLink"];
+          			    $("#currentlyInGrinder").append("<div style='margin:10px' class='thumbnail'><img height='100' width='100' border='0' class='thumbnail' src='" + coffeeBeanLink + "'><span style='font-weight: bolder'>" + quantity + " Beans</span></div>");
+				    }
+				});
+			}
+	        $("#grindBtn").click(function(e){
+				e.preventDefault();
+				if ($("#currentlyInGrinder").html() == '')
+				{
+					alert('Please, select any coffee bean from Coffee Selection panel');
+				} else {
+					$.ajax({
+	          			type:"POST",          
+	          			url: '{{ path('dwpubcoffee_maker_grind') }}',		          			
+	          			success: function(){
+					    	location.href='{{ path('dwpubcoffee_maker_thanks') }}';
+					    }
+					});
+				}					
+			});
+		});
+    </script>
+{% endblock %}

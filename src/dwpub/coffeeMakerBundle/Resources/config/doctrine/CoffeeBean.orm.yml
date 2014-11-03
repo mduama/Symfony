@@ -1,0 +1,15 @@
+dwpub\coffeeMakerBundle\Entity\CoffeeBean:
+    type: entity
+    table: null
+    repositoryClass: dwpub\coffeeMakerBundle\Entity\CoffeeBeanRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        link:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

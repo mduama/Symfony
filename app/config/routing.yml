@@ -1,0 +1,3 @@
+dwpubcoffee_maker:
+    resource: "@dwpubcoffeeMakerBundle/Resources/config/routing.yml"
+    prefix:   /

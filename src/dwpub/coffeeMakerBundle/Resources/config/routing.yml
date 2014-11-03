@@ -1,0 +1,27 @@
+dwpubcoffee_maker_homepage:
+    pattern:  /CoffeeMaker/index
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:index }
+
+dwpubcoffee_maker_searchimages:
+    pattern:  /CoffeeMaker/search
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:search }
+    
+dwpubcoffee_maker_saveimages:
+    pattern:  /CoffeeMaker/selection
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:saveImages }
+  
+dwpubcoffee_maker_addToGrinder:
+    pattern:  /CoffeeMaker/addToGrinder
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:addToGrinder }
+    
+dwpubcoffee_maker_updateGrinder:
+    pattern:  /CoffeeMaker/updateGrinder
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:updateGrinder }
+    
+dwpubcoffee_maker_grind:
+    pattern:  /CoffeeMaker/grind
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:grind }
+    
+dwpubcoffee_maker_thanks:
+    pattern:  /CoffeeMaker/thanks
+    defaults: { _controller: dwpubcoffeeMakerBundle:CoffeMaker:thanks }

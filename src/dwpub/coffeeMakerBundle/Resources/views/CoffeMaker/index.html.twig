@@ -1,0 +1,75 @@
+{% extends "dwpubcoffeeMakerBundle::layout.html.twig" %}
+
+{% block head %}    
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/dwpubcoffeemaker/css/image-picker.css') }}" />    
+    <script type="text/javascript" src="{{ asset('bundles/dwpubcoffeemaker/js/image-picker.js') }}"> </script>    
+{% endblock %}
+
+{% block content %}
+    <img class="dwpubcoffeelogo" alt="DWPub Coffee Maker" title="DWPub Coffee Maker" src="{{ asset('bundles/dwpubcoffeemaker/images/coffeemaker.jpg') }}">
+    <form id="search_form" action="{{ path('dwpubcoffee_maker_searchimages') }}" method="post">
+	    <div>       
+            <input type="text" id="search_text" name="search_text" maxlength="255" class="form-control" placeholder="Search for Images" value="{% if search_text is defined %}{{ search_text }}{% endif %}" />         
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Go!</button>
+       </div>
+	</form>
+	<br />
+	{% if images is defined %}
+		{% if images is not empty %}
+			<div class="panel panel-default">
+				<div class="panel-body">
+			    	<select multiple="multiple" class="image-picker">	
+						{% for key, image in images %}
+						    {% if loop.index <= 5 %}
+								{% if key != '0' %}
+									<option data-img-src="{{ image }}" value="{{ key }}" />
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</select>					
+			  	</div>
+			  	<div class="panel-body">
+			    	<select multiple="multiple" class="image-picker">	
+						{% for key, image in images %}
+						    {% if loop.index > 5 %}
+								{% if key != '0' %}
+									<option data-img-src="{{ image }}" value="{{ key }}" />
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</select>					
+			  	</div>
+			  	<div class="panel-footer">
+			  		<button class="operation btn btn-lg btn-primary btn-block" type="submit" id="saveImg">Use this images</button>
+			  	</div>
+			</div>
+		{% else %}			
+			<div class="alert alert-warning" role="alert">Please make a search!</div>
+		{% endif %}	
+	{% endif %}
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('select').imagepicker();
+		var images = new Array();
+		function llamadaPost(url, param) {
+	        var temp=document.createElement("form");
+	        temp.action=url;
+			temp.method="POST";
+			temp.style.display="none";
+			var opt=document.createElement("textarea");		
+	        opt.name="images";
+			opt.value=param;
+			temp.appendChild(opt);
+			document.body.appendChild(temp);
+			temp.submit();
+			return temp;
+		}
+		$('#saveImg').click(function(){        	 
+			$('.selected img').each(function(){				
+				images.push($(this).attr("src"));
+			});
+			llamadaPost("{{ path('dwpubcoffee_maker_saveimages') }}", images);
+		});
+	});
+    </script>
+{% endblock %}			
